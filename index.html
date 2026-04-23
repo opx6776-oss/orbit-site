@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORBIT — Fuel Your Orbit</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+
+body{
+  background:black;
+  color:white;
+  overflow:hidden;
+  transition:background 0.6s ease;
+}
+
+/* PARTICLES */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:-1;
+}
+
+/* HERO */
+.hero{
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+/* LOGO */
+.logo-wrap{position:relative;margin-bottom:10px;}
+
+.ring{
+  width:100px;height:100px;
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:50%;
+  position:absolute;
+  top:-20px;left:-20px;
+  animation:spin 14s linear infinite;
+}
+
+.dot{
+  width:8px;height:8px;
+  background:white;
+  border-radius:50%;
+  position:absolute;
+  top:-4px;left:46px;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
+
+.logo{
+  font-size:3.5rem;
+  letter-spacing:10px;
+}
+
+/* TEXT */
+.tagline{color:#aaa;margin-top:10px;letter-spacing:3px;}
+.headline{margin-top:25px;font-size:2.7rem;font-weight:700;}
+.sub{margin-top:10px;color:#ccc;}
+
+/* MODES */
+.modes{
+  margin-top:40px;
+  display:flex;
+  gap:15px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+
+.mode{
+  padding:10px 20px;
+  border-radius:30px;
+  border:1px solid rgba(255,255,255,0.2);
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.mode:hover{
+  transform:translateY(-5px) scale(1.05);
+  background:rgba(255,255,255,0.1);
+}
+
+/* EMAIL */
+.email-box{
+  margin-top:40px;
+  display:flex;
+  gap:10px;
+}
+
+input{
+  padding:14px;
+  border-radius:30px;
+  border:none;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  transition:0.3s;
+}
+
+input:focus{
+  outline:none;
+  box-shadow:0 0 10px rgba(255,255,255,0.25);
+}
+
+/* BUTTON */
+button{
+  padding:14px 20px;
+  border-radius:30px;
+  border:none;
+  background:white;
+  color:black;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+  position:relative;
+  overflow:hidden;
+}
+
+button:hover{
+  transform:translateY(-3px) scale(1.05);
+}
+
+/* SUCCESS */
+.success{
+  margin-top:30px;
+  opacity:0;
+  transform:translateY(20px);
+  transition:0.5s;
+}
+
+.success.show{
+  opacity:1;
+  transform:translateY(0);
+  color:#9cffd0;
+}
+
+/* FOOTER */
+.footer{
+  position:absolute;
+  bottom:20px;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.footer-text{
+  color:#777;
+  font-size:0.9rem;
+  opacity:0;
+  transform:translateY(20px);
+  animation:fadeUp 2s ease forwards;
+}
+
+.footer-copy{
+  color:#555;
+  font-size:0.75rem;
+  margin-top:5px;
+  opacity:0;
+  transform:translateY(20px);
+  animation:fadeUp 2s ease forwards;
+  animation-delay:0.5s;
+}
+
+@keyframes fadeUp{
+  to{opacity:1;transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="hero">
+
+  <div class="logo-wrap">
+    <div class="ring"><div class="dot"></div></div>
+    <div class="logo">ORBIT</div>
+  </div>
+
+  <div class="tagline">FUEL YOUR ORBIT</div>
+
+  <div class="headline">Choose Your State</div>
+  <div class="sub">Switch your energy, focus, and flow in minutes.</div>
+
+  <div class="modes">
+    <div class="mode" data-color="#aaa">Moon</div>
+    <div class="mode" data-color="#ff3b3b">Mars</div>
+    <div class="mode" data-color="#ffaa00">Sun</div>
+    <div class="mode" data-color="#8a2be2">Galaxy</div>
+    <div class="mode" data-color="#ffffff">Black Hole</div>
+  </div>
+
+  <div class="email-box" id="emailBox">
+    <input id="emailInput" type="email" placeholder="Enter your email">
+    <button id="joinBtn">Join Early Access</button>
+  </div>
+
+  <div class="success" id="successMsg">
+    🚀 You're in orbit. Launching soon.
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="footer-text">
+    Clean energy • No crash • Performance system
+  </div>
+  <div class="footer-copy">
+    © 2026 ORBIT — All Rights Reserved
+  </div>
+</div>
+
+<script>
+/* PARTICLES */
+const canvas=document.getElementById("bg");
+const ctx=canvas.getContext("2d");
+
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let stars=[];
+for(let i=0;i<180;i++){
+  stars.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    s:Math.random()*2,
+    sp:Math.random()*0.4
+  });
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="white";
+
+  stars.forEach(st=>{
+    st.y+=st.sp;
+    if(st.y>canvas.height){
+      st.y=0;
+      st.x=Math.random()*canvas.width;
+    }
+    ctx.beginPath();
+    ctx.arc(st.x,st.y,st.s,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* MODE BG CHANGE */
+document.querySelectorAll(".mode").forEach(el=>{
+  el.addEventListener("mouseenter",()=>{
+    document.body.style.background =
+      `radial-gradient(circle, ${el.dataset.color}20, black)`;
+  });
+});
+
+/* EMAIL */
+const btn=document.getElementById("joinBtn");
+btn.onclick=async()=>{
+  const email=document.getElementById("emailInput").value;
+  if(!email)return;
+
+  btn.innerText="Joining...";
+  btn.disabled=true;
+
+  await fetch("/save-email",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email})
+  });
+
+  document.getElementById("emailBox").style.opacity="0";
+
+  setTimeout(()=>{
+    document.getElementById("emailBox").style.display="none";
+    document.getElementById("successMsg").classList.add("show");
+  },400);
+};
+
+/* TRACK */
+fetch("/track");
+</script>
+
+</body>
+</html>

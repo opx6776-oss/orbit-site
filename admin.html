@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>ORBIT Admin</title>
+<style>
+body{background:black;color:white;font-family:Arial;padding:20px;}
+.card{margin-bottom:20px;}
+</style>
+</head>
+
+<body>
+
+<h1>ORBIT Dashboard</h1>
+<div id="stats"></div>
+<div id="emails"></div>
+
+<script>
+const key="orbit123";
+
+async function load(){
+  const res=await fetch(`/admin-data?key=${key}`);
+  const data=await res.json();
+
+  document.getElementById("stats").innerHTML=
+    `<h3>Visits: ${data.totalVisits}</h3>
+     <h3>Emails: ${data.totalEmails}</h3>`;
+
+  document.getElementById("emails").innerHTML=
+    data.emails.map(e=>`<div>${e.email}</div>`).join("");
+}
+
+load();
+</script>
+
+</body>
+</html>
